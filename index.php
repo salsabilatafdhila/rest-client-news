@@ -6,7 +6,13 @@ include("config/config.php");
 $api_key="50114b823f9a418a90fdede328db35ae";
  
 //url api untuk ambil berita headline di Indonesia
-$url="https://newsapi.org/v2/top-headlines?country=us&apiKey=".$api_key;
+if (isset($_GET['q']) && !empty($_GET['q'])) {
+    $keyword = urlencode($_GET['q']);
+    $url = "https://newsapi.org/v2/everything?q={$keyword}&apiKey=" . $api_key;
+} else {
+    // Jika tidak ada pencarian, tampilkan headline default
+    $url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $api_key;
+}
 
 //menyimpan hasil dalam variabel
 $data=http_request_get($url);
@@ -93,6 +99,19 @@ $hasil=json_decode($data,true);
     </ul>
   </div>
 </nav>
+
+<!-- Form Search -->
+<div class="container" style="margin-top: 90px; margin-bottom: 20px;">
+  <form method="GET" action="">
+    <div class="input-group">
+      <input type="text" name="q" class="form-control" placeholder="Cari berita..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
+      <div class="input-group-append">
+        <button class="btn btn-news" type="submit">Cari</button>
+      </div>
+    </div>
+  </form>
+</div>
+
 <!-- navbar -->
 <div class="container" style="margin-top: 75px;">
     <div class="row">
